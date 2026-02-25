@@ -4,17 +4,35 @@ import { Couleurs, Espacement } from '../theme/theme';
 import { CarteAnnonce, EtatVide } from '../components/commun/Composants';
 import { ANNONCES_FICTIVES } from '../donnees/donneesFictives';
 import { useApp } from '../contexte/ContexteApp';
-import {EnTete} from '../components/EnTete';
+import { EnTete } from '../components/EnTete';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import EcranNonConnecte from '../components/commun/EcranNonConnecte';
 
 
 export default function EcranFavoris({ navigation }: { navigation: any }) {
-  const { favoris, basculerFavori, estFavori } = useApp();
+  const { utilisateur, favoris, basculerFavori, estFavori } = useApp();
+
+  // ✅ GARDE D'AUTH : si non connecté → écran de connexion
+  if (!utilisateur) {
+    return (
+      <EcranNonConnecte
+        navigation={navigation}
+        icone="heart-outline"
+        titre="Sauvegardez vos coups de cœur"
+        description="Connectez-vous pour retrouver toutes vos annonces favorites en un seul endroit."
+      />
+    );
+  }
+
   const listeFavoris = ANNONCES_FICTIVES.filter(l => favoris.includes(l.id));
 
   return (
     <SafeAreaView style={s.conteneur}>
-      <EnTete typeEnTete="simple" titre="Mes Favoris" sousTitre={`${listeFavoris.length} logement${listeFavoris.length !== 1 ? 's' : ''}`} />
+      <EnTete
+        typeEnTete="simple"
+        titre="Mes Favoris"
+        sousTitre={`${listeFavoris.length} logement${listeFavoris.length !== 1 ? 's' : ''}`}
+      />
       {listeFavoris.length === 0 ? (
         <EtatVide
           icone="heart-outline"

@@ -64,14 +64,9 @@ function OngletsAgent() {
   return (
     <Onglets.Navigator screenOptions={STYLE_BARRE_ONGLETS}>
       <Onglets.Screen
-        name="TableauBord"
+        name="Accueil"
         component={TableauBordAgent}
-        options={{ tabBarLabel: 'Tableau', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'grid' : 'grid-outline'} size={size} color={color} /> }}
-      />
-      <Onglets.Screen
-        name="AjoutAnnonce"
-        component={EcranAjoutAnnonce}
-        options={{ tabBarLabel: 'Publier', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} size={size} color={color} /> }}
+        options={{ tabBarLabel: 'Tableau de bord', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} /> }}
       />
       <Onglets.Screen
         name="Conversations"
@@ -92,9 +87,9 @@ function OngletsProprietaire() {
   return (
     <Onglets.Navigator screenOptions={STYLE_BARRE_ONGLETS}>
       <Onglets.Screen
-        name="MesBiens"
+        name="Accueil"
         component={TableauBordProprietaire}
-        options={{ tabBarLabel: 'Mes biens', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} /> }}
+        options={{ tabBarLabel: 'Tableau de bord', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} /> }}
       />
       <Onglets.Screen
         name="Conversations"
@@ -114,7 +109,13 @@ function OngletsProprietaire() {
 export default function NavigateurPrincipal() {
   return (
     <NavigationContainer>
-      <Pile.Navigator screenOptions={{ headerShown: false }} initialRouteName="Introduction">
+      {/* 
+        ✅ CHANGEMENT CLÉ : initialRouteName="OngletLocataire"
+        L'utilisateur arrive directement sur la page d'accueil (annonces)
+        sans avoir à se connecter. L'authentification est demandée uniquement
+        lors d'une action (favoris, messages, profil).
+      */}
+      <Pile.Navigator screenOptions={{ headerShown: false }} initialRouteName="OngletLocataire">
         <Pile.Screen name="Introduction"        component={EcranIntroduction} />
         <Pile.Screen name="Authentification"    component={EcranAuthentification} />
         <Pile.Screen name="OngletLocataire"     component={OngletsLocataire} />
@@ -126,6 +127,7 @@ export default function NavigateurPrincipal() {
         <Pile.Screen name="Chat"                component={EcranChat} />
         <Pile.Screen name="Favoris"             component={EcranFavoris} />
         <Pile.Screen name="Recherche"           component={EcranRecherche} />
+        <Pile.Screen name="AjoutAnnonce"        component={EcranAjoutAnnonce} />
       </Pile.Navigator>
     </NavigationContainer>
   );
