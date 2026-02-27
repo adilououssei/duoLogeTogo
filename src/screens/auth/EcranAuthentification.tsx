@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Couleurs, RayonBordure } from '../../theme/theme';
 import { Bouton, ChampSaisie } from '../../components/commun/Composants';
-import { useApp } from '../../contexte/ContexteApp'; // ✅ CORRIGÉ
+import { useApp } from '../../contexte/ContexteApp';
 import { TypeUtilisateur } from '../../types/modeles';
 
 const { height } = Dimensions.get('window');
@@ -30,7 +30,7 @@ const PAYS_AFRIQUE = [
 ];
 
 export default function EcranAuthentification({ navigation }: { navigation: NativeStackNavigationProp<any> }) {
-  const { connexion } = useApp(); // ✅ CORRIGÉ : connexion (pas connecter)
+  const { connexion } = useApp();
   const [mode, setMode] = useState<'connexion' | 'inscription'>('connexion');
   const [typeUtilisateur, setTypeUtilisateur] = useState<TypeUtilisateur>('locataire');
   const [nom, setNom] = useState('');
@@ -64,7 +64,7 @@ export default function EcranAuthentification({ navigation }: { navigation: Nati
     if (!valider()) return;
     setChargement(true);
     setTimeout(() => {
-      connexion({ // ✅ CORRIGÉ : connexion (pas connecter)
+      connexion({
         id: 'u1',
         nom: mode === 'connexion' ? 'Utilisateur Test' : nom,
         prenom: mode === 'connexion' ? '' : prenom,
@@ -76,16 +76,42 @@ export default function EcranAuthentification({ navigation }: { navigation: Nati
         verifie: false,
       });
       setChargement(false);
-      const dest = typeUtilisateur === 'agent' ? 'OngletAgent' : typeUtilisateur === 'proprietaire' ? 'OngletProprietaire' : 'OngletLocataire';
-      navigation.replace(dest as any);
+
+      // ✅ Après connexion :
+      // - Agent → tableau de bord agent
+      // - Propriétaire → tableau de bord propriétaire
+      // - Locataire → on revient simplement à la page d'où on venait
+      if (typeUtilisateur === 'agent') {
+        navigation.replace('OngletAgent');
+      } else if (typeUtilisateur === 'proprietaire') {
+        navigation.replace('OngletProprietaire');
+      } else {
+        // Locataire : retour à la page précédente (favoris, messages, profil...)
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+        } else {
+          navigation.replace('OngletLocataire');
+        }
+      }
     }, 1000);
   };
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView style={{ flex: 1, backgroundColor: Couleurs.fond }} showsVerticalScrollIndicator={false}>
+
         {/* En-tête dégradé */}
         <LinearGradient colors={[Couleurs.primaire, '#C44A00']} style={s.enTete}>
+
+          {/* ✅ Bouton retour : permet de revenir à la home sans se connecter */}
+          <TouchableOpacity
+            style={s.boutonRetour}
+            onPress={() => navigation.canGoBack() ? navigation.goBack() : navigation.navigate('OngletLocataire')}
+          >
+            <Ionicons name="arrow-back" size={22} color={Couleurs.blanc} />
+            <Text style={s.texteRetour}>Continuer sans compte</Text>
+          </TouchableOpacity>
+
           <View style={s.logoWrap}>
             <View style={s.logoIcone}><Ionicons name="home" size={38} color={Couleurs.blanc} /></View>
             <Text style={s.logoTexte}>LogeTogo</Text>
@@ -200,7 +226,20 @@ export default function EcranAuthentification({ navigation }: { navigation: Nati
 }
 
 const s = StyleSheet.create({
-  enTete: { height: height * 0.28, justifyContent: 'flex-end', paddingBottom: 40, alignItems: 'center' },
+  enTete: { height: height * 0.32, justifyContent: 'flex-end', paddingBottom: 40, alignItems: 'center' },
+  boutonRetour: {
+    position: 'absolute',
+    top: 52,
+    left: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 20,
+  },
+  texteRetour: { fontSize: 13, color: Couleurs.blanc, fontWeight: '600' },
   logoWrap: { alignItems: 'center' },
   logoIcone: { width: 68, height: 68, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.2)', alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
   logoTexte: { fontSize: 30, fontWeight: '800', color: Couleurs.blanc },

@@ -38,22 +38,34 @@ function OngletsLocataire() {
       <Onglets.Screen
         name="Accueil"
         component={EcranAccueil}
-        options={{ tabBarLabel: 'Accueil', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} /> }}
+        options={{
+          tabBarLabel: 'Accueil',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />,
+        }}
       />
       <Onglets.Screen
         name="Favoris"
         component={EcranFavoris}
-        options={{ tabBarLabel: 'Favoris', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'heart' : 'heart-outline'} size={size} color={color} /> }}
+        options={{
+          tabBarLabel: 'Favoris',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'heart' : 'heart-outline'} size={size} color={color} />,
+        }}
       />
       <Onglets.Screen
         name="Conversations"
         component={EcranConversations}
-        options={{ tabBarLabel: 'Messages', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'chatbubble' : 'chatbubble-outline'} size={size} color={color} /> }}
+        options={{
+          tabBarLabel: 'Messages',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'chatbubble' : 'chatbubble-outline'} size={size} color={color} />,
+        }}
       />
       <Onglets.Screen
         name="Profil"
         component={EcranProfil}
-        options={{ tabBarLabel: 'Profil', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} /> }}
+        options={{
+          tabBarLabel: 'Profil',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} />,
+        }}
       />
     </Onglets.Navigator>
   );
@@ -63,20 +75,42 @@ function OngletsLocataire() {
 function OngletsAgent() {
   return (
     <Onglets.Navigator screenOptions={STYLE_BARRE_ONGLETS}>
+
+      {/* ✅ Onglet Accueil : voir les annonces comme les locataires */}
       <Onglets.Screen
         name="Accueil"
-        component={TableauBordAgent}
-        options={{ tabBarLabel: 'Tableau de bord', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} /> }}
+        component={EcranAccueil}
+        options={{
+          tabBarLabel: 'Accueil',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />,
+        }}
       />
+
+      {/* Tableau de bord agent */}
+      <Onglets.Screen
+        name="Dashboard"
+        component={TableauBordAgent}
+        options={{
+          tabBarLabel: 'Tableau de bord',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'grid' : 'grid-outline'} size={size} color={color} />,
+        }}
+      />
+
       <Onglets.Screen
         name="Conversations"
         component={EcranConversations}
-        options={{ tabBarLabel: 'Messages', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'chatbubble' : 'chatbubble-outline'} size={size} color={color} /> }}
+        options={{
+          tabBarLabel: 'Messages',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'chatbubble' : 'chatbubble-outline'} size={size} color={color} />,
+        }}
       />
       <Onglets.Screen
         name="Profil"
         component={EcranProfil}
-        options={{ tabBarLabel: 'Profil', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} /> }}
+        options={{
+          tabBarLabel: 'Profil',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} />,
+        }}
       />
     </Onglets.Navigator>
   );
@@ -86,20 +120,42 @@ function OngletsAgent() {
 function OngletsProprietaire() {
   return (
     <Onglets.Navigator screenOptions={STYLE_BARRE_ONGLETS}>
+
+      {/* ✅ Onglet Accueil : voir les annonces comme les locataires */}
       <Onglets.Screen
         name="Accueil"
-        component={TableauBordProprietaire}
-        options={{ tabBarLabel: 'Tableau de bord', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} /> }}
+        component={EcranAccueil}
+        options={{
+          tabBarLabel: 'Accueil',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={color} />,
+        }}
       />
+
+      {/* Tableau de bord propriétaire */}
+      <Onglets.Screen
+        name="Dashboard"
+        component={TableauBordProprietaire}
+        options={{
+          tabBarLabel: 'Mes biens',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'business' : 'business-outline'} size={size} color={color} />,
+        }}
+      />
+
       <Onglets.Screen
         name="Conversations"
         component={EcranConversations}
-        options={{ tabBarLabel: 'Messages', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'chatbubble' : 'chatbubble-outline'} size={size} color={color} /> }}
+        options={{
+          tabBarLabel: 'Messages',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'chatbubble' : 'chatbubble-outline'} size={size} color={color} />,
+        }}
       />
       <Onglets.Screen
         name="Profil"
         component={EcranProfil}
-        options={{ tabBarLabel: 'Profil', tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} /> }}
+        options={{
+          tabBarLabel: 'Profil',
+          tabBarIcon: ({ focused, color, size }) => <Ionicons name={focused ? 'person' : 'person-outline'} size={size} color={color} />,
+        }}
       />
     </Onglets.Navigator>
   );
@@ -109,12 +165,6 @@ function OngletsProprietaire() {
 export default function NavigateurPrincipal() {
   return (
     <NavigationContainer>
-      {/* 
-        ✅ CHANGEMENT CLÉ : initialRouteName="OngletLocataire"
-        L'utilisateur arrive directement sur la page d'accueil (annonces)
-        sans avoir à se connecter. L'authentification est demandée uniquement
-        lors d'une action (favoris, messages, profil).
-      */}
       <Pile.Navigator screenOptions={{ headerShown: false }} initialRouteName="OngletLocataire">
         <Pile.Screen name="Introduction"        component={EcranIntroduction} />
         <Pile.Screen name="Authentification"    component={EcranAuthentification} />

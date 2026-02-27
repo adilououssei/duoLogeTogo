@@ -9,13 +9,28 @@ import { Couleurs, Espacement, RayonBordure, Ombres } from '../theme/theme';
 import { Avatar } from '../components/commun/Composants';
 import { CONVERSATIONS_FICTIVES } from '../donnees/donneesFictives';
 import { Conversation, Message } from '../types/modeles';
-import {EnTete} from '../components/EnTete';
+import { EnTete } from '../components/EnTete';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useApp } from '../contexte/ContexteApp';
+import EcranNonConnecte from '../components/commun/EcranNonConnecte';
 
 
 // ─── ÉCRAN LISTE DES CONVERSATIONS ───────────────────────────────────────────
 export function EcranConversations({ navigation }: { navigation: any }) {
+  const { utilisateur } = useApp();
   const [conversations] = useState<Conversation[]>(CONVERSATIONS_FICTIVES);
+
+  // ✅ GARDE D'AUTH : si non connecté → écran de connexion
+  if (!utilisateur) {
+    return (
+      <EcranNonConnecte
+        navigation={navigation}
+        icone="chatbubbles-outline"
+        titre="Vos messages vous attendent"
+        description="Connectez-vous pour contacter les propriétaires et agents directement."
+      />
+    );
+  }
 
   return (
     <SafeAreaView style={s.conteneur}>
