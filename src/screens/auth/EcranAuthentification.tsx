@@ -10,6 +10,7 @@ import { Couleurs, RayonBordure } from '../../theme/theme';
 import { Bouton, ChampSaisie } from '../../components/commun/Composants';
 import { useApp } from '../../contexte/ContexteApp'; // ✅ CORRIGÉ
 import { TypeUtilisateur } from '../../types/modeles';
+import { login, register } from '../../services/authService';
 
 const { height } = Dimensions.get('window');
 
@@ -60,25 +61,69 @@ export default function EcranAuthentification({ navigation }: { navigation: Nati
     return Object.keys(e).length === 0;
   };
 
-  const gererSoumission = () => {
+  const gererSoumission = async () => {
+
     if (!valider()) return;
-    setChargement(true);
-    setTimeout(() => {
-      connexion({ // ✅ CORRIGÉ : connexion (pas connecter)
-        id: 'u1',
-        nom: mode === 'connexion' ? 'Utilisateur Test' : nom,
-        prenom: mode === 'connexion' ? '' : prenom,
-        email,
-        telephone: `${paysSelectionne.indicatif} ${telephone}`,
-        indicatifPays: paysSelectionne.indicatif,
-        codePays: paysSelectionne.code,
-        type: typeUtilisateur,
-        verifie: false,
-      });
+
+    try {
+
+      setChargement(true);
+
+      if (mode === "connexion") {
+
+        const data = await login(email, motDePasse);
+
+        if (!data.token) {
+          alert(data.message);
+          return;
+        }
+
+        // ✅ VÉRIFICATION : le rôle du compte doit correspondre à l'onglet sélectionné
+        if (data.user.role !== typeUtilisateur) {
+          alert(
+            `Ce compte est un compte ${data.user.role === "locataire" ? "Locataire" :
+              data.user.role === "proprietaire" ? "Propriétaire" : "Agent"
+            }. Veuillez sélectionner le bon type d'utilisateur.`
+          );
+          return;
+        }
+
+        connexion(data.user);
+
+        const dest =
+          data.user.role === "agent"
+            ? "OngletAgent"
+            : data.user.role === "proprietaire"
+              ? "OngletProprietaire"
+              : "OngletLocataire";
+
+        navigation.replace(dest);
+      } else {
+
+        const data = await register(
+          nom,
+          prenom,
+          `${paysSelectionne.indicatif} ${telephone}`,
+          email,
+          motDePasse,
+          typeUtilisateur // ⚠️ envoyé comme role
+        );
+
+        if (data.message !== "Utilisateur créé avec succès") {
+          alert("Erreur inscription");
+          return;
+        }
+
+        alert("Inscription réussie, connectez-vous");
+        setMode("connexion");
+      }
+
+    } catch (error) {
+      console.log(error);
+      alert("Erreur serveur");
+    } finally {
       setChargement(false);
-      const dest = typeUtilisateur === 'agent' ? 'OngletAgent' : typeUtilisateur === 'proprietaire' ? 'OngletProprietaire' : 'OngletLocataire';
-      navigation.replace(dest as any);
-    }, 1000);
+    }
   };
 
   return (
