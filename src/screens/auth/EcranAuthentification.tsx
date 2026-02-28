@@ -10,6 +10,7 @@ import { Couleurs, RayonBordure } from '../../theme/theme';
 import { Bouton, ChampSaisie } from '../../components/commun/Composants';
 import { useApp } from '../../contexte/ContexteApp';
 import { TypeUtilisateur } from '../../types/modeles';
+import { login, register } from '../../services/authService';
 
 const { height } = Dimensions.get('window');
 
@@ -60,11 +61,12 @@ export default function EcranAuthentification({ navigation }: { navigation: Nati
     return Object.keys(e).length === 0;
   };
 
-  const gererSoumission = () => {
+  const gererSoumission = async () => {
+
     if (!valider()) return;
     setChargement(true);
     setTimeout(() => {
-      connexion({
+      connexion({ // ✅ CORRIGÉ : connexion (pas connecter)
         id: 'u1',
         nom: mode === 'connexion' ? 'Utilisateur Test' : nom,
         prenom: mode === 'connexion' ? '' : prenom,
@@ -76,23 +78,8 @@ export default function EcranAuthentification({ navigation }: { navigation: Nati
         verifie: false,
       });
       setChargement(false);
-
-      // ✅ Après connexion :
-      // - Agent → tableau de bord agent
-      // - Propriétaire → tableau de bord propriétaire
-      // - Locataire → on revient simplement à la page d'où on venait
-      if (typeUtilisateur === 'agent') {
-        navigation.replace('OngletAgent');
-      } else if (typeUtilisateur === 'proprietaire') {
-        navigation.replace('OngletProprietaire');
-      } else {
-        // Locataire : retour à la page précédente (favoris, messages, profil...)
-        if (navigation.canGoBack()) {
-          navigation.goBack();
-        } else {
-          navigation.replace('OngletLocataire');
-        }
-      }
+      const dest = typeUtilisateur === 'agent' ? 'OngletAgent' : typeUtilisateur === 'proprietaire' ? 'OngletProprietaire' : 'OngletLocataire';
+      navigation.replace(dest as any);
     }, 1000);
   };
 
