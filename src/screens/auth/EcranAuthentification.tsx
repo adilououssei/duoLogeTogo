@@ -64,23 +64,58 @@ export default function EcranAuthentification({ navigation }: { navigation: Nati
   const gererSoumission = async () => {
 
     if (!valider()) return;
-    setChargement(true);
-    setTimeout(() => {
-      connexion({ // ✅ CORRIGÉ : connexion (pas connecter)
-        id: 'u1',
-        nom: mode === 'connexion' ? 'Utilisateur Test' : nom,
-        prenom: mode === 'connexion' ? '' : prenom,
-        email,
-        telephone: `${paysSelectionne.indicatif} ${telephone}`,
-        indicatifPays: paysSelectionne.indicatif,
-        codePays: paysSelectionne.code,
-        type: typeUtilisateur,
-        verifie: false,
-      });
+
+    try {
+
+      setChargement(true);
+
+      if (mode === "connexion") {
+
+        const data = await login(email, motDePasse);
+
+        if (!data.token) {
+          alert(data.message);
+          return;
+        }
+
+        connexion(data.user); // stocker user dans contexte
+
+        // Navigation selon rôle
+        const dest =
+          data.user.role === "agent"
+            ? "OngletAgent"
+            : data.user.role === "proprietaire"
+              ? "OngletProprietaire"
+              : "OngletLocataire";
+
+        navigation.replace(dest);
+
+      } else {
+
+        const data = await register(
+          nom,
+          prenom,
+          `${paysSelectionne.indicatif} ${telephone}`,
+          email,
+          motDePasse,
+          typeUtilisateur // ⚠️ envoyé comme role
+        );
+
+        if (data.message !== "Utilisateur créé avec succès") {
+          alert("Erreur inscription");
+          return;
+        }
+
+        alert("Inscription réussie, connectez-vous");
+        setMode("connexion");
+      }
+
+    } catch (error) {
+      console.log(error);
+      alert("Erreur serveur");
+    } finally {
       setChargement(false);
-      const dest = typeUtilisateur === 'agent' ? 'OngletAgent' : typeUtilisateur === 'proprietaire' ? 'OngletProprietaire' : 'OngletLocataire';
-      navigation.replace(dest as any);
-    }, 1000);
+    }
   };
 
   return (
