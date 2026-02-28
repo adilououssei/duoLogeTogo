@@ -38,11 +38,22 @@ export const EnTete: React.FC<PropsEnTete> = ({
   actionDroite,
 }) => {
   if (typeEnTete === 'accueil') {
+    const estConnecte = !!nomUtilisateur;
+
     return (
       <View style={s.enTeteAccueil}>
         <View>
-          <Text style={s.salutation}>Bonjour 👋</Text>
-          <Text style={s.nomUtilisateur}>{nomUtilisateur ?? 'Utilisateur'}</Text>
+          {estConnecte ? (
+            <>
+              <Text style={s.salutation}>Bonjour 👋</Text>
+              <Text style={s.nomUtilisateur}>{nomUtilisateur}</Text>
+            </>
+          ) : (
+            <>
+              <Text style={s.salutation}>Bienvenue sur</Text>
+              <Text style={s.nomUtilisateur}>LogeTogo 🏠</Text>
+            </>
+          )}
         </View>
         <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
           {onNotifications && (
@@ -55,10 +66,20 @@ export const EnTete: React.FC<PropsEnTete> = ({
               )}
             </TouchableOpacity>
           )}
-          {onProfil && (
-            <TouchableOpacity onPress={onProfil}>
-              <Avatar uri={avatarUtilisateur} nom={nomUtilisateur} taille={42} />
-            </TouchableOpacity>
+          {/* ✅ Si connecté → avatar, sinon → bouton Se connecter */}
+          {estConnecte ? (
+            onProfil && (
+              <TouchableOpacity onPress={onProfil}>
+                <Avatar uri={avatarUtilisateur} nom={nomUtilisateur} taille={42} />
+              </TouchableOpacity>
+            )
+          ) : (
+            onProfil && (
+              <TouchableOpacity style={s.boutonConnexion} onPress={onProfil}>
+                <Ionicons name="person-outline" size={16} color={Couleurs.blanc} />
+                <Text style={s.texteConnexion}>Connexion</Text>
+              </TouchableOpacity>
+            )
           )}
         </View>
       </View>
@@ -105,7 +126,7 @@ const s = StyleSheet.create({
     paddingTop: Espacement.base,
     paddingBottom: Espacement.sm,
     backgroundColor: Couleurs.fond,
-    
+
   },
   salutation: { fontSize: 13, color: Couleurs.texte.secondaire },
   nomUtilisateur: { fontSize: 20, fontWeight: '800', color: Couleurs.texte.primaire },
@@ -142,6 +163,21 @@ const s = StyleSheet.create({
     borderBottomColor: Couleurs.bordure,
   },
   titreMinimal: { flex: 1, fontSize: 17, fontWeight: '700', color: Couleurs.texte.primaire },
+
+  boutonConnexion: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: Couleurs.primaire,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderRadius: 20,
+  },
+  texteConnexion: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: Couleurs.blanc,
+  },
 });
 
 export default EnTete;

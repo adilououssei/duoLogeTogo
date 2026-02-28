@@ -45,7 +45,7 @@ export default function EcranAccueil({ navigation }: { navigation: NativeStackNa
         avatarUtilisateur={utilisateur?.avatar}
         nombreNotifications={nombreNonLus}
         onNotifications={() => navigation.navigate('Notifications')}
-        onProfil={() => navigation.navigate('Profil')}
+        onProfil={() => navigation.navigate(utilisateur ? 'Profil' : 'Authentification')}
       />
 
       {/* Barre de recherche + bouton filtre */}
